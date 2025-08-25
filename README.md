@@ -32,6 +32,6 @@ Ouvrir ECO5585_Prereqs.Rmd dans RStudio et Knit pour générer le PDF.
 
 ## Remarques
 
-Les données sont manuelles et anonymisées, construites à partir de mon relevé de notes non-officiel.
+Le jeu de données a été construit manuellement à partir de mon relevé de notes non-officiel.
 
 Ce complément est destiné à illustrer ma progression académique et mes compétences quantitatives pertinentes pour ECO 5585.
