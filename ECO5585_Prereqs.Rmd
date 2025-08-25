@@ -1,0 +1,112 @@
+---
+title: "ECO 5585 : Prérequis et MPC"
+author: "Andy Sabrina Guerrier (8851496)"
+date: "`r Sys.Date()`"
+output: 
+  pdf_document:
+    latex_engine: xelatex
+header-includes:
+  - \usepackage{float}
+  - \floatplacement{figure}{H}
+---
+
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(
+	echo = FALSE,
+	message = FALSE,
+	warning = FALSE
+)
+```
+
+# Résumé
+
+Ce document présente un survol ciblé de mon parcours en Mathématiques financières et économie, en soulignant les cours fondamentaux et avancés pertinents pour **ECO 5585 – Économétrie I**.  
+
+Ce complément au relevé de notes compare la MPC globale à la MPC récente, mettant en évidence la progression après mon premier contact avec l’économétrie financière.
+
+_Note : le jeu de données utilisé pour les calculs a été construit manuellement à partir de mon relevé de notes complet. Le code et le jeu de données peuvent être consultés sur GitHub._
+
+```{r echo=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+library(tidyverse)
+library(knitr)
+library(readxl)
+
+# Lecture des données
+donnees_mpc <- read_excel("~/Documents/ECO5585-Inscription/mpc.xlsx")
+
+# Nettoyage des données
+mpc_dt <- donnees_mpc %>%
+  mutate(
+    Valeur_Num = as.numeric(ifelse(Valeur_Num == "S.O.", NA, Valeur_Num)),
+    Moyenne_Classe = as.numeric(ifelse(Moyenne_Classe == "S.O.", NA, Moyenne_Classe))
+  ) %>%
+  filter(Inclus_MPC == "VRAI", !is.na(Valeur_Num))
+
+# Calcul MPC globale et MPC récente (2023-2025)
+mpc_globale <- sum(mpc_dt$Valeur_Num * mpc_dt$Credits_Obtenus, na.rm = TRUE) / 
+               sum(mpc_dt$Credits_Obtenus, na.rm = TRUE)
+
+mpc_recente <- mpc_dt %>%
+  filter(Année >= 2023) %>%
+  summarise(
+    MPC_2023_2025 = sum(Valeur_Num * Credits_Obtenus, na.rm = TRUE) / sum(Credits_Obtenus, na.rm = TRUE)
+  ) %>% pull(MPC_2023_2025)
+
+```
+
+## Cours pertinents et comparaison de la MPC
+```{r}
+
+library(knitr)
+
+# Tableau des 6 cours clés
+cours_cles <- data.frame(
+  Trimestre = c("Automne 2020", "Hiver 2022", "Hiver 2023", "Hiver 2024", "Hiver 2024", "Hiver 2025"),
+  Cours = c("MAT 2742", "MAT 3775", "ECO 4585", "MAT 3379", "MAT 3575", "MAT 2125"),
+  Description = c(
+    "Introduction à l’algèbre linéaire appliquée",
+    "Analyse de la régression",
+    "Économétrie financière",
+    "Introduction to Time Series Analysis",
+    "Introduction à la statistique mathématique",
+    "Elementary Real Analysis"
+  ),
+  Note = c("A-", "B", "C+", "A-", "A+", "B+")
+)
+
+kable(cours_cles, caption = "Cours fondamentaux et avancés pertinents pour ECO 5585")
+
+```
+
+
+```{r}
+# Tableau MPC pour graphique
+mpc_summary <- tibble::tibble(
+  Période = c("MPC globale (2016-2025)", "MPC récente (2023-2025)"),
+  MPC = c(round(mpc_globale, 2), round(mpc_recente, 2))
+)
+
+```
+
+```{r mpc_graph, fig.cap="Comparaison des moyennes pondérées cumulées (MPC) globale et récente", fig.width=6, fig.height=4, fig.pos="H"}
+ggplot(mpc_summary, aes(x = Période, y = MPC, fill = Période)) +
+  geom_col(width = 0.5, show.legend = FALSE) +
+  geom_text(aes(label = MPC), vjust = -0.5, size = 4) +
+  ylim(0, 10) +
+  labs(x = "", y = "MPC") +
+  theme_minimal()
+```
+
+
+
+
+## Synthèse de la progression académique
+
+La MPC globale (2016‑2025) est de `r round(mpc_globale,2)` (B), reflétant l’ensemble de mon parcours en Mathématiques financières et économie, avec 3 crédits restants pour l’obtention du diplôme.  
+
+La MPC récente (2023‑2025) s’élève à `r round(mpc_recente,2)` (B+).  
+
+Cette trajectoire résulte d'une consolidation marquée de mes compétences quantitatives, particulièrement à travers les cours de mathématiques et statistiques avancées. Ma performance soutenue dans les derniers trimestres témoigne de la rigueur et de la préparation nécessaires pour aborder un cours d'économétrie de deuxième cycle.
+
